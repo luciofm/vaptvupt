@@ -149,9 +149,10 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 	private AsyncResponse<T> readData(Request req, InputStream in) throws JSONException, IOException {
 		Gson gson = new Gson();
 		AsyncResponse<T> response;
-		if (TextUtils.isEmpty(req.getResponseField()))
-			response = gson.fromJson(new InputStreamReader(in), type);
-		else {
+		if (TextUtils.isEmpty(req.getResponseField())) {
+			T data = gson.fromJson(new InputStreamReader(in), type);
+			response = new AsyncResponse<T>(data);
+		} else {
 			String str = new String(IOUtils.inputStreamToByteArray(in));
 			Log.d("receitas", "String: " + str.length());
 			JSONObject json = new JSONObject(str);
