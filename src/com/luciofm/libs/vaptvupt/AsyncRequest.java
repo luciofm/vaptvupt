@@ -1,6 +1,5 @@
 package com.luciofm.libs.vaptvupt;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -149,7 +148,9 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 	private AsyncResponse<T> readData(Request req, InputStream in) throws JSONException, IOException {
 		Gson gson = new Gson();
 		AsyncResponse<T> response;
-		if (TextUtils.isEmpty(req.getResponseField())) {
+		if (!req.isJson()) {
+			response = new AsyncResponse<T>((T) new String(IOUtils.inputStreamToByteArray(in)));
+		} else if (TextUtils.isEmpty(req.getResponseField())) {
 			T data = gson.fromJson(new InputStreamReader(in), type);
 			response = new AsyncResponse<T>(data);
 		} else {
