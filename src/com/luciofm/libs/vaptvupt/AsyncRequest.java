@@ -156,7 +156,9 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 			throws JSONException, IOException, MalformedJsonException {
 		Gson gson = new Gson();
 		AsyncResponse<T> response;
-		if (TextUtils.isEmpty(req.getResponseField())) {
+		if (!req.isJson()) {
+			response = new AsyncResponse<T>((T) new String(IOUtils.inputStreamToByteArray(in)));
+		} else if (TextUtils.isEmpty(req.getResponseField())) {
 			T data = gson.fromJson(new InputStreamReader(in), type);
 			response = new AsyncResponse<T>(data);
 		} else {
