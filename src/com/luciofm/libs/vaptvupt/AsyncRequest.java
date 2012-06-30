@@ -1,6 +1,5 @@
 package com.luciofm.libs.vaptvupt;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.MalformedJsonException;
 
 public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> {
 
@@ -107,6 +107,9 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 		HttpURLConnection connection;
 		AsyncResponse<T> response = null;
 
+		if (BuildConfig.DEBUG)
+			Log.d("vaptvupt", "GET: " + req.getUrl());
+
 		try {
 			url = new URL(req.getUrl());
 			connection = (HttpURLConnection) url.openConnection();
@@ -134,6 +137,9 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return new AsyncResponse<T>(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AsyncResponse<T>(e);
 		} finally {
 			if (in != null)
 				try {
@@ -146,12 +152,14 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 		return response;
 	}
 
-	private AsyncResponse<T> readData(Request req, InputStream in) throws JSONException, IOException {
+	private AsyncResponse<T> readData(Request req, InputStream in)
+			throws JSONException, IOException, MalformedJsonException {
 		Gson gson = new Gson();
 		AsyncResponse<T> response;
-		if (TextUtils.isEmpty(req.getResponseField()))
-			response = gson.fromJson(new InputStreamReader(in), type);
-		else {
+		if (TextUtils.isEmpty(req.getResponseField())) {
+			T data = gson.fromJson(new InputStreamReader(in), type);
+			response = new AsyncResponse<T>(data);
+		} else {
 			String str = new String(IOUtils.inputStreamToByteArray(in));
 			Log.d("receitas", "String: " + str.length());
 			JSONObject json = new JSONObject(str);
