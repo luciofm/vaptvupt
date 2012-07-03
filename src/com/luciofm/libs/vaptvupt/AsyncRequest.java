@@ -152,6 +152,15 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 		return response;
 	}
 
+	private AsyncResponse<T> doPost(Request req) {
+		
+		return null;
+	}
+
+	private AsyncResponse<T> doDelete(Request req) {
+		return null;
+	}
+
 	private AsyncResponse<T> readData(Request req, InputStream in)
 			throws JSONException, IOException, MalformedJsonException {
 		Gson gson = new Gson();
@@ -180,14 +189,6 @@ public class AsyncRequest<T> extends AsyncTask<Request, Void, AsyncResponse<T>> 
 			response = new AsyncResponse<T>(data);
 		}
 		return response;
-	}
-
-	private AsyncResponse<T> doPost(Request req) {
-		return null;
-	}
-
-	private AsyncResponse<T> doDelete(Request req) {
-		return null;
 	}
 
 	@SuppressWarnings("rawtypes")
