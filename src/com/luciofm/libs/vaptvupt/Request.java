@@ -62,6 +62,10 @@ public class Request {
 		private String mResponseField;
 		private boolean mJson = true;
 
+		public Builder() {
+			this(GET);
+		}
+
 		public Builder(int method) {
 			mMethod = method;
 		}
